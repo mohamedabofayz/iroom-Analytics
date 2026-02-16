@@ -5,81 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iroom - Revenue Management Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #f4f6f9;
-            --bg-card: #ffffff;
-            --text-primary: #1e3a5f;
-            --text-secondary: #5a6b7d;
-            --text-muted: #8a9aad;
-            --blue-primary: #2563eb;
-            --blue-dark: #1e3a5f;
-            --blue-light: #dbeafe;
-            --orange-accent: #f97316;
-            --orange-light: #fff7ed;
-            --green-success: #10b981;
-            --green-light: #d1fae5;
-            --red-alert: #ef4444;
-            --border-color: #e5e9f0;
-            --shadow: 0 2px 8px rgba(30, 58, 95, 0.06);
+            --dark-blue: #0A2E5A;
+            --green: #27AE60;
+            --orange: #F39C12;
+            --yellow: #F1C40F;
+            --red: #E74C3C;
+            --light-blue: #E8F4FD;
+            --gray: #6C757D;
+            --border: #dee2e6;
+            --card-bg: #ffffff;
+            --input-bg: #f8f9fa;
+            --modal-bg: #ffffff;
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --font-sans: 'IBM Plex Sans Arabic', 'Plus Jakarta Sans', sans-serif;
+            /* Heatmap Colors */
+            --very-high: #e74c3c;
+            --high: #f39c12;
+            --medium: #f1c40f;
+            --neutral: #ffffff;
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'IBM Plex Sans Arabic', 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-main);
-            color: var(--text-primary);
+            font-family: var(--font-sans);
+            background-color: #F0F4F8;
+            color: var(--text-main);
             min-height: 100vh;
-            line-height: 1.5;
-        }
-
-        .font-display {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
         }
 
         .card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid white;
+            border-radius: 16px;
             overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         }
 
         .card-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-color);
+            gap: 12px;
+            padding: 18px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            background: linear-gradient(135deg, #fafbfc 0%, #ffffff 100%);
         }
 
         .card-body {
-            padding: 20px;
+            padding: 24px;
         }
 
         .section-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 5px 12px;
+            border-radius: 8px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
 
+        .badge-blue {
+            background: var(--light-blue);
+            color: var(--dark-blue);
+        }
+
+        .badge-green {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--green);
+        }
+
+        .badge-orange {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--orange);
+        }
+
         .metric-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 10px;
-            padding: 16px;
-            border: 1px solid var(--border-color);
+            background: var(--light-blue);
+            border-radius: 12px;
+            padding: 18px;
+            border-top: 3px solid var(--dark-blue);
+            transition: transform 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: scale(1.02);
         }
 
         .metric-value {
@@ -87,78 +117,94 @@
             font-weight: 800;
             font-size: 32px;
             line-height: 1;
-            color: var(--blue-dark);
+            color: var(--dark-blue);
         }
 
-        .metric-value.orange { color: var(--orange-accent); }
-        .metric-value.blue { color: var(--blue-primary); }
-        .metric-value.green { color: var(--green-success); }
+        .metric-value.green { color: var(--green); }
+        .metric-value.orange { color: var(--orange); }
+        .metric-value.red { color: var(--red); }
 
         .trend-badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 700;
         }
 
         .trend-up {
-            background: var(--green-light);
-            color: var(--green-success);
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--green);
         }
 
         .trend-down {
-            background: #fef2f2;
-            color: var(--red-alert);
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--red);
         }
 
         .action-btn {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 20px;
             border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            font-family: var(--font-sans);
+        }
+
+        .btn-primary {
+            background: var(--dark-blue);
+            color: white;
+            box-shadow: 0 4px 15px rgba(10, 46, 90, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #082348;
+            transform: translateY(-2px);
         }
 
         .btn-orange {
-            background: var(--orange-accent);
+            background: var(--orange);
             color: white;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
         }
 
         .btn-orange:hover {
-            background: #ea580c;
-            transform: translateY(-1px);
+            background: #d68910;
+            transform: translateY(-2px);
         }
 
-        .btn-blue {
-            background: var(--blue-primary);
+        .btn-green {
+            background: var(--green);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-green:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--dark-blue);
+            border: 2px solid var(--dark-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--dark-blue);
             color: white;
         }
 
-        .btn-blue:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
-        }
-
-        .btn-dark {
-            background: var(--blue-dark);
-            color: white;
-        }
-
-        .btn-dark:hover {
-            background: #172554;
-            transform: translateY(-1px);
-        }
-
+        /* Heatmap Styles */
         .heatmap-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -167,25 +213,71 @@
 
         .heatmap-cell {
             aspect-ratio: 1;
-            border-radius: 4px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            font-weight: 600;
-            color: white;
-            transition: transform 0.2s;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .heatmap-cell:hover {
-            transform: scale(1.1);
-            z-index: 1;
+            transform: scale(1.15);
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        .heatmap-low { background: #93c5fd; color: var(--blue-dark); }
-        .heatmap-medium { background: #60a5fa; }
-        .heatmap-high { background: #f97316; }
-        .heatmap-very-high { background: #dc2626; }
+        .heat-very-high {
+            background-color: var(--very-high);
+            color: white;
+        }
+
+        .heat-high {
+            background-color: var(--high);
+            color: white;
+        }
+
+        .heat-medium {
+            background-color: var(--medium);
+            color: #212529;
+        }
+
+        .heat-neutral {
+            background-color: #f8f9fa;
+            color: #aaa;
+            border: 1px solid #eee;
+        }
+
+        /* Heatmap Legend */
+        .heatmap-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 12px;
+            background: var(--light-blue);
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .legend-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
 
         .data-table {
             width: 100%;
@@ -193,38 +285,24 @@
         }
 
         .data-table th {
-            padding: 10px 12px;
+            padding: 12px 16px;
             text-align: right;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--dark-blue);
             text-transform: uppercase;
-            background: #f8fafc;
-            border-bottom: 1px solid var(--border-color);
+            background: var(--light-blue);
+            border-bottom: 2px solid var(--border);
         }
 
         .data-table td {
-            padding: 12px;
-            font-size: 13px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 14px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid #f0f0f0;
         }
 
-        .donut-chart {
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
-
-        .donut-chart svg {
-            transform: rotate(-90deg);
-        }
-
-        .donut-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
+        .data-table tbody tr:hover {
+            background: var(--light-blue);
         }
 
         .chart-container {
@@ -232,54 +310,50 @@
             height: 140px;
         }
 
-        .map-container {
-            position: relative;
-            background: var(--blue-light);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
         .lang-switch {
             display: flex;
             background: white;
             border-radius: 8px;
-            padding: 3px;
-            border: 1px solid var(--border-color);
+            padding: 4px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .lang-btn {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             background: transparent;
             border: none;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             transition: all 0.2s ease;
+            font-family: var(--font-sans);
         }
 
         .lang-btn.active {
-            background: var(--blue-primary);
+            background: var(--dark-blue);
             color: white;
         }
 
         .status-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: var(--green-light);
+            gap: 8px;
+            padding: 8px 14px;
+            background: rgba(39, 174, 96, 0.1);
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--green-success);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--green);
+            border: 1px solid rgba(39, 174, 96, 0.2);
         }
 
         .pulse-dot {
             width: 8px;
             height: 8px;
-            background: var(--green-success);
+            background: var(--green);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
@@ -308,21 +382,25 @@
         }
 
         .icon-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
+            background: var(--light-blue);
+            border: 1px solid var(--border);
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .icon-btn:hover {
-            background: var(--blue-light);
-            border-color: var(--blue-primary);
+            background: var(--dark-blue);
+            border-color: var(--dark-blue);
+        }
+
+        .icon-btn:hover svg {
+            stroke: white;
         }
 
         [dir="ltr"] .data-table th,
@@ -332,60 +410,90 @@
 
         .progress-ring {
             width: 100%;
-            height: 6px;
+            height: 8px;
             background: #e5e9f0;
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            border-radius: 3px;
+            border-radius: 4px;
             transition: width 0.8s ease;
         }
 
-        .marker-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--orange-accent);
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        .map-container {
+            position: relative;
+            background: var(--light-blue);
+            border-radius: 12px;
+            overflow: hidden;
         }
+
+        .donut-chart {
+            position: relative;
+            width: 90px;
+            height: 90px;
+        }
+
+        .donut-chart svg {
+            transform: rotate(-90deg);
+        }
+
+        .high-season-card {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+            border: 2px solid var(--orange);
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #0d3d75 100%);
+        }
+
+        .strategy-badge {
+            display: inline-block;
+            background: rgba(10, 46, 90, 0.1);
+            color: var(--dark-blue);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .positive-value { color: var(--green); }
+        .negative-value { color: var(--red); }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header class="bg-white border-b border-[var(--border-color)] sticky top-0 z-50">
-        <div class="max-w-[1600px] mx-auto px-6 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-[var(--blue-primary)] flex items-center justify-center">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+    <header class="header-gradient sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center border border-white/20">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                         <circle cx="12" cy="10" r="3"/>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="font-display font-bold text-xl text-[var(--blue-dark)]">iroom</h1>
-                    <p class="text-xs text-[var(--text-muted)]" data-ar="نظام إدارة الإيرادات الذكي" data-en="Smart Revenue Management">نظام إدارة الإيرادات الذكي</p>
+                    <h1 class="font-bold text-2xl text-white">iroom</h1>
+                    <p class="text-xs text-white/70" data-ar="نظام إدارة الإيرادات الذكي" data-en="Smart Revenue Management">نظام إدارة الإيرادات الذكي</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-4">
-                <div class="status-badge">
+                <div class="status-badge bg-white/10 border-white/20 text-white">
                     <span class="pulse-dot"></span>
                     <span data-ar="مباشر" data-en="Live">مباشر</span>
                 </div>
                 
                 <div class="flex gap-2">
-                    <button class="icon-btn" title="Notifications">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2">
+                    <button class="icon-btn bg-white/10 border-white/20">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                         </svg>
                     </button>
-                    <button class="icon-btn" title="Messages">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2">
+                    <button class="icon-btn bg-white/10 border-white/20">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                         </svg>
                     </button>
@@ -405,23 +513,22 @@
             
             <!-- Column 1: Market Pulse -->
             <div class="space-y-5 animate-in delay-1">
-                <!-- Header Card -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="w-8 h-8 rounded-lg bg-[var(--blue-light)] flex items-center justify-center">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue-primary)" stroke-width="2">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: var(--light-blue);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--dark-blue)" stroke-width="2">
                                 <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <h2 class="font-semibold text-[var(--blue-dark)]" data-ar="نبض السوق" data-en="Market Pulse">نبض السوق</h2>
+                            <h2 class="font-bold text-lg" style="color: var(--dark-blue);" data-ar="نبض السوق" data-en="Market Pulse">نبض السوق</h2>
                         </div>
-                        <div class="section-badge bg-[var(--blue-light)] text-[var(--blue-primary)]" data-ar="مباشر" data-en="Live">مباشر</div>
+                        <div class="section-badge badge-blue" data-ar="مباشر" data-en="Live">مباشر</div>
                     </div>
                     <div class="card-body">
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-4">
                             <div class="metric-card">
-                                <p class="text-xs text-[var(--text-muted)] mb-1" data-ar="إشغال السوق" data-en="Market Occupancy">إشغال السوق</p>
+                                <p class="text-xs font-semibold mb-2" style="color: var(--text-muted);" data-ar="إشغال السوق" data-en="Market Occupancy">إشغال السوق</p>
                                 <div class="metric-value">72%</div>
                                 <div class="trend-badge trend-up mt-2">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -431,7 +538,7 @@
                                 </div>
                             </div>
                             <div class="metric-card">
-                                <p class="text-xs text-[var(--text-muted)] mb-1" data-ar="إشغال الفندق" data-en="Hotel Occupancy">إشغال الفندق</p>
+                                <p class="text-xs font-semibold mb-2" style="color: var(--text-muted);" data-ar="إشغال الفندق" data-en="Hotel Occupancy">إشغال الفندق</p>
                                 <div class="metric-value green">78%</div>
                                 <div class="trend-badge trend-up mt-2">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -442,18 +549,18 @@
                             </div>
                         </div>
                         
-                        <div class="metric-card mt-3">
+                        <div class="metric-card mt-4">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <p class="text-xs text-[var(--text-muted)]" data-ar="متوسط سعر السوق" data-en="Market ADR">متوسط سعر السوق</p>
-                                    <div class="flex items-baseline gap-1 mt-1">
+                                    <p class="text-xs font-semibold mb-1" style="color: var(--text-muted);" data-ar="متوسط سعر السوق" data-en="Market ADR">متوسط سعر السوق</p>
+                                    <div class="flex items-baseline gap-1">
                                         <span class="metric-value orange">540</span>
-                                        <span class="text-sm text-[var(--text-secondary)]">SAR</span>
+                                        <span class="text-sm font-semibold" style="color: var(--text-muted);">SAR</span>
                                     </div>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-xs text-[var(--text-muted)]" data-ar="فجوة السعر" data-en="Price Gap">فجوة السعر</p>
-                                    <p class="text-lg font-bold text-[var(--green-success)]">+55 SAR</p>
+                                    <p class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="فجوة السعر" data-en="Price Gap">فجوة السعر</p>
+                                    <p class="text-xl font-bold positive-value">+55 SAR</p>
                                 </div>
                             </div>
                         </div>
@@ -462,10 +569,10 @@
 
                 <!-- Trend Chart -->
                 <div class="card">
-                    <div class="card-body py-4">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="text-sm font-semibold text-[var(--blue-dark)]" data-ar="اتجاه الإشغال (آخر 12 شهر)" data-en="Occupancy Trend (Last 12 Months)">اتجاه الإشغال (آخر 12 شهر)</p>
-                            <span class="section-badge bg-[var(--green-light)] text-[var(--green-success)]" data-ar="طلب قوي" data-en="Strong Demand">طلب قوي</span>
+                    <div class="card-body">
+                        <div class="flex justify-between items-center mb-4">
+                            <p class="text-sm font-bold" style="color: var(--dark-blue);" data-ar="اتجاه الإشغال (آخر 12 شهر)" data-en="Occupancy Trend (Last 12 Months)">اتجاه الإشغال (آخر 12 شهر)</p>
+                            <span class="section-badge badge-green" data-ar="طلب قوي" data-en="Strong Demand">طلب قوي</span>
                         </div>
                         <div class="chart-container">
                             <canvas id="trendChart"></canvas>
@@ -478,50 +585,50 @@
                     <div class="card-body">
                         <div class="flex items-start gap-4">
                             <div class="flex-1">
-                                <p class="text-xs text-[var(--text-muted)] mb-1" data-ar="زوار الشهر" data-en="Monthly Visitors">زوار الشهر</p>
+                                <p class="text-xs font-semibold mb-1" style="color: var(--text-muted);" data-ar="زوار الشهر" data-en="Monthly Visitors">زوار الشهر</p>
                                 <div class="flex items-baseline gap-2">
-                                    <span class="metric-value blue">5.1M</span>
-                                    <span class="text-sm text-[var(--text-secondary)]" data-ar="زائر" data-en="Visitors">زائر</span>
+                                    <span class="metric-value" style="color: var(--dark-blue);">5.1M</span>
+                                    <span class="text-sm font-semibold" style="color: var(--text-muted);" data-ar="زائر" data-en="Visitors">زائر</span>
                                 </div>
                                 <div class="flex items-center gap-4 mt-3">
                                     <div>
-                                        <p class="text-xs text-[var(--text-muted)]" data-ar="متوسط الإقامة" data-en="Avg. Stay">متوسط الإقامة</p>
-                                        <p class="text-lg font-bold text-[var(--blue-dark)]">3.2 <span class="text-xs font-normal text-[var(--text-muted)]" data-ar="ليالي" data-en="Nights">ليالي</span></p>
+                                        <p class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="متوسط الإقامة" data-en="Avg. Stay">متوسط الإقامة</p>
+                                        <p class="text-lg font-bold" style="color: var(--dark-blue);">3.2 <span class="text-xs font-normal" style="color: var(--text-muted);" data-ar="ليالي" data-en="Nights">ليالي</span></p>
                                     </div>
                                     <div>
-                                        <p class="text-xs text-[var(--text-muted)]" data-ar="متوسط الإنفاق" data-en="Avg. Spend">متوسط الإنفاق</p>
-                                        <p class="text-lg font-bold text-[var(--blue-dark)]">900 <span class="text-xs font-normal text-[var(--text-muted)]">SAR</span></p>
+                                        <p class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="متوسط الإنفاق" data-en="Avg. Spend">متوسط الإنفاق</p>
+                                        <p class="text-lg font-bold" style="color: var(--dark-blue);">900 <span class="text-xs font-normal" style="color: var(--text-muted);">SAR</span></p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="map-container w-28 h-28 flex-shrink-0 flex items-center justify-center relative">
-                                <svg viewBox="0 0 100 100" width="90" height="90">
-                                    <path d="M50 5 L85 25 L90 65 L75 95 L25 95 L10 65 L15 25 Z" fill="#93c5fd" stroke="var(--blue-primary)" stroke-width="1.5"/>
-                                    <circle cx="45" cy="35" r="3" fill="var(--orange-accent)"/>
-                                    <circle cx="55" cy="50" r="3" fill="var(--orange-accent)"/>
-                                    <circle cx="35" cy="65" r="3" fill="var(--orange-accent)"/>
+                            <div class="map-container w-28 h-28 flex-shrink-0 flex items-center justify-center">
+                                <svg viewBox="0 0 100 100" width="85" height="85">
+                                    <path d="M50 5 L85 25 L90 65 L75 95 L25 95 L10 65 L15 25 Z" fill="var(--light-blue)" stroke="var(--dark-blue)" stroke-width="1.5"/>
+                                    <circle cx="45" cy="35" r="3" fill="var(--orange)"/>
+                                    <circle cx="55" cy="50" r="3" fill="var(--orange)"/>
+                                    <circle cx="35" cy="65" r="3" fill="var(--orange)"/>
                                 </svg>
                             </div>
                         </div>
                         
-                        <div class="border-t border-[var(--border-color)] mt-4 pt-4">
+                        <div class="border-t mt-4 pt-4" style="border-color: var(--border);">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <div class="donut-chart">
-                                        <svg width="80" height="80" viewBox="0 0 80 80">
-                                            <circle cx="40" cy="40" r="30" fill="none" stroke="#e5e9f0" stroke-width="8"/>
-                                            <circle cx="40" cy="40" r="30" fill="none" stroke="var(--blue-primary)" stroke-width="8" stroke-dasharray="122.5 188.5" stroke-linecap="round"/>
-                                            <circle cx="40" cy="40" r="30" fill="none" stroke="var(--orange-accent)" stroke-width="8" stroke-dasharray="65.5 188.5" stroke-dashoffset="-122.5" stroke-linecap="round"/>
+                                        <svg width="90" height="90" viewBox="0 0 90 90">
+                                            <circle cx="45" cy="45" r="32" fill="none" stroke="#e5e9f0" stroke-width="10"/>
+                                            <circle cx="45" cy="45" r="32" fill="none" stroke="var(--dark-blue)" stroke-width="10" stroke-dasharray="131 201" stroke-linecap="round"/>
+                                            <circle cx="45" cy="45" r="32" fill="none" stroke="var(--orange)" stroke-width="10" stroke-dasharray="70 201" stroke-dashoffset="-131" stroke-linecap="round"/>
                                         </svg>
                                     </div>
                                     <div class="space-y-2">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-[var(--blue-primary)]"></span>
-                                            <span class="text-xs text-[var(--text-secondary)]"><span class="font-semibold">65%</span> <span data-ar="محلي" data-en="Domestic">محلي</span></span>
+                                            <span class="w-3 h-3 rounded" style="background: var(--dark-blue);"></span>
+                                            <span class="text-sm font-semibold" style="color: var(--text-muted);">65% <span data-ar="محلي" data-en="Domestic">محلي</span></span>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-[var(--orange-accent)]"></span>
-                                            <span class="text-xs text-[var(--text-secondary)]"><span class="font-semibold">35%</span> <span data-ar="دولي" data-en="International">دولي</span></span>
+                                            <span class="w-3 h-3 rounded" style="background: var(--orange);"></span>
+                                            <span class="text-sm font-semibold" style="color: var(--text-muted);">35% <span data-ar="دولي" data-en="International">دولي</span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -533,32 +640,31 @@
 
             <!-- Column 2: Revenue Intelligence -->
             <div class="space-y-5 animate-in delay-2">
-                <!-- Header Card -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="w-8 h-8 rounded-lg bg-[var(--orange-light)] flex items-center justify-center">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange-accent)" stroke-width="2">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(243, 156, 18, 0.1);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
                                 <line x1="12" y1="1" x2="12" y2="23"/>
                                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <h2 class="font-semibold text-[var(--blue-dark)]" data-ar="ذكاء الإيرادات" data-en="Revenue Intelligence">ذكاء الإيرادات</h2>
+                            <h2 class="font-bold text-lg" style="color: var(--dark-blue);" data-ar="ذكاء الإيرادات" data-en="Revenue Intelligence">ذكاء الإيرادات</h2>
                         </div>
-                        <div class="section-badge bg-[var(--orange-light)] text-[var(--orange-accent)]" data-ar="AI" data-en="AI">AI</div>
+                        <div class="section-badge badge-orange" data-ar="AI" data-en="AI">AI</div>
                     </div>
                     <div class="card-body">
                         <div class="grid grid-cols-3 gap-3">
                             <div class="text-center">
-                                <p class="text-xs text-[var(--text-muted)] mb-1" data-ar="توقع 30 يوم" data-en="30-Day">توقع 30 يوم</p>
+                                <p class="text-xs font-semibold mb-1" style="color: var(--text-muted);" data-ar="توقع 30 يوم" data-en="30-Day">توقع 30 يوم</p>
                                 <div class="metric-value green text-2xl">85%</div>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs text-[var(--text-muted)] mb-1" data-ar="توقع 60 يوم" data-en="60-Day">توقع 60 يوم</p>
-                                <div class="metric-value blue text-2xl">77%</div>
+                                <p class="text-xs font-semibold mb-1" style="color: var(--text-muted);" data-ar="توقع 60 يوم" data-en="60-Day">توقع 60 يوم</p>
+                                <div class="metric-value text-2xl" style="color: var(--dark-blue);">77%</div>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs text-[var(--text-muted)] mb-1">ADR</p>
+                                <p class="text-xs font-semibold mb-1">ADR</p>
                                 <div class="metric-value orange text-2xl">480</div>
                             </div>
                         </div>
@@ -568,31 +674,40 @@
                 <!-- Heatmap Calendar -->
                 <div class="card">
                     <div class="card-body">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="text-sm font-semibold text-[var(--blue-dark)]" data-ar="خريطة حرارة الإشغال" data-en="Occupancy Heatmap">خريطة حرارة الإشغال</p>
-                            <span class="text-xs text-[var(--text-muted)]" data-ar="يناير - نوفمبر" data-en="Jan - Nov">يناير - نوفمبر</span>
+                        <div class="flex justify-between items-center mb-4">
+                            <p class="text-sm font-bold" style="color: var(--dark-blue);" data-ar="خريطة حرارة الإشغال" data-en="Occupancy Heatmap">خريطة حرارة الإشغال</p>
+                            <span class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="يناير - نوفمبر" data-en="Jan - Nov">يناير - نوفمبر</span>
                         </div>
                         
                         <div class="heatmap-grid mb-2">
-                            <div class="text-center text-[10px] text-[var(--text-muted)] pb-1" data-ar="إث" data-en="Mon">إث</div>
-                            <div class="text-center text-[10px] text-[var(--text-muted)] pb-1" data-ar="ثل" data-en="Tue">ثل</div>
-                            <div class="text-center text-[10px] text-[var(--text-muted)] pb-1" data-ar="أرب" data-en="Wed">أرب</div>
-                            <div class="text-center text-[10px] text-[var(--text-muted)] pb-1" data-ar="خم" data-en="Thu">خم</div>
-                            <div class="text-center text-[10px] text-[var(--text-muted)] pb-1" data-ar="جم" data-en="Fri">جم</div>
-                            <div class="text-center text-[10px] text-[var(--text-muted)] pb-1" data-ar="سب" data-en="Sat">سب</div>
-                            <div class="text-center text-[10px] text-[var(--text-muted)] pb-1" data-ar="أح" data-en="Sun">أح</div>
+                            <div class="text-center text-[10px] font-semibold pb-1" style="color: var(--text-muted);" data-ar="إث" data-en="Mon">إث</div>
+                            <div class="text-center text-[10px] font-semibold pb-1" style="color: var(--text-muted);" data-ar="ثل" data-en="Tue">ثل</div>
+                            <div class="text-center text-[10px] font-semibold pb-1" style="color: var(--text-muted);" data-ar="أرب" data-en="Wed">أرب</div>
+                            <div class="text-center text-[10px] font-semibold pb-1" style="color: var(--text-muted);" data-ar="خم" data-en="Thu">خم</div>
+                            <div class="text-center text-[10px] font-semibold pb-1" style="color: var(--text-muted);" data-ar="جم" data-en="Fri">جم</div>
+                            <div class="text-center text-[10px] font-semibold pb-1" style="color: var(--text-muted);" data-ar="سب" data-en="Sat">سب</div>
+                            <div class="text-center text-[10px] font-semibold pb-1" style="color: var(--text-muted);" data-ar="أح" data-en="Sun">أح</div>
                         </div>
                         
                         <div id="heatmapGrid" class="heatmap-grid"></div>
                         
-                        <div class="flex justify-between items-center mt-3">
-                            <div class="flex items-center gap-1">
-                                <span class="w-3 h-3 rounded heatmap-low"></span>
-                                <span class="w-3 h-3 rounded heatmap-medium"></span>
-                                <span class="w-3 h-3 rounded heatmap-high"></span>
-                                <span class="w-3 h-3 rounded heatmap-very-high"></span>
+                        <div class="heatmap-legend">
+                            <div class="legend-item">
+                                <div class="legend-color heat-neutral"></div>
+                                <span class="legend-label" data-ar="منخفض" data-en="Low">منخفض</span>
                             </div>
-                            <span class="text-[10px] text-[var(--text-muted)]" data-ar="منخفض ← مرتفع" data-en="Low ← High">منخفض ← مرتفع</span>
+                            <div class="legend-item">
+                                <div class="legend-color heat-medium"></div>
+                                <span class="legend-label" data-ar="متوسط" data-en="Medium">متوسط</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color heat-high"></div>
+                                <span class="legend-label" data-ar="مرتفع" data-en="High">مرتفع</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color heat-very-high"></div>
+                                <span class="legend-label" data-ar="مرتفع جداً" data-en="Very High">مرتفع جداً</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -600,7 +715,7 @@
                 <!-- Market Gap Summary -->
                 <div class="card">
                     <div class="card-body">
-                        <p class="text-sm font-semibold text-[var(--blue-dark)] mb-3" data-ar="ملخص فجوة السوق" data-en="Market Gap Summary">ملخص فجوة السوق</p>
+                        <p class="text-sm font-bold mb-4" style="color: var(--dark-blue);" data-ar="ملخص فجوة السوق" data-en="Market Gap Summary">ملخص فجوة السوق</p>
                         
                         <table class="data-table">
                             <thead>
@@ -612,19 +727,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="font-medium" data-ar="نسبة الإشغال" data-en="Occupancy">نسبة الإشغال</td>
+                                    <td class="font-semibold" data-ar="نسبة الإشغال" data-en="Occupancy">نسبة الإشغال</td>
                                     <td>72%</td>
-                                    <td class="text-[var(--green-success)] font-semibold">78%</td>
+                                    <td class="positive-value font-bold">78%</td>
                                 </tr>
                                 <tr>
-                                    <td class="font-medium" data-ar="فجوة التسعير" data-en="Pricing Gap">فجوة التسعير</td>
+                                    <td class="font-semibold" data-ar="فجوة التسعير" data-en="Pricing Gap">فجوة التسعير</td>
                                     <td>540 SAR</td>
-                                    <td class="text-[var(--green-success)] font-semibold">620 SAR</td>
+                                    <td class="positive-value font-bold">620 SAR</td>
                                 </tr>
                                 <tr>
-                                    <td class="font-medium">ADR</td>
+                                    <td class="font-semibold">ADR</td>
                                     <td>480 SAR</td>
-                                    <td class="text-[var(--green-success)] font-semibold">540 SAR</td>
+                                    <td class="positive-value font-bold">540 SAR</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -634,23 +749,22 @@
                 <!-- Action Buttons -->
                 <div class="card">
                     <div class="card-body">
-                        <p class="text-sm font-semibold text-[var(--blue-dark)] mb-3" data-ar="إجراءات سريعة" data-en="Quick Actions">إجراءات سريعة</p>
-                        <div class="space-y-2">
+                        <p class="text-sm font-bold mb-4" style="color: var(--dark-blue);" data-ar="إجراءات سريعة" data-en="Quick Actions">إجراءات سريعة</p>
+                        <div class="space-y-3">
                             <button class="action-btn btn-orange" id="increaseRateBtn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="18,15 12,9 6,15"/>
                                 </svg>
                                 <span data-ar="زيادة السعر +5%" data-en="Increase Rate +5%">زيادة السعر +5%</span>
                             </button>
-                            <button class="action-btn btn-blue" id="openPromoBtn">
+                            <button class="action-btn btn-primary" id="openPromoBtn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                                     <line x1="16" y1="2" x2="16" y2="6"/>
-                                    <line x1="8" y1="2" x2="8" y2="6"/>
                                 </svg>
                                 <span data-ar="فتح عرض ترويجي" data-en="Open Promotion">فتح عرض ترويجي</span>
                             </button>
-                            <button class="action-btn btn-dark" id="closeChannelsBtn">
+                            <button class="action-btn btn-outline" id="closeChannelsBtn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                                     <line x1="9" y1="9" x2="15" y2="15"/>
@@ -665,37 +779,36 @@
 
             <!-- Column 3: Forecast & Actions -->
             <div class="space-y-5 animate-in delay-3">
-                <!-- Header Card -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="w-8 h-8 rounded-lg bg-[var(--green-light)] flex items-center justify-center">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green-success)" stroke-width="2">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(39, 174, 96, 0.1);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2">
                                 <circle cx="12" cy="12" r="10"/>
                                 <polyline points="12,6 12,12 16,14"/>
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <h2 class="font-semibold text-[var(--blue-dark)]" data-ar="التوقعات والإجراءات" data-en="Forecast & Actions">التوقعات والإجراءات</h2>
+                            <h2 class="font-bold text-lg" style="color: var(--dark-blue);" data-ar="التوقعات والإجراءات" data-en="Forecast & Actions">التوقعات والإجراءات</h2>
                         </div>
-                        <div class="section-badge bg-[var(--green-light)] text-[var(--green-success)]" data-ar="مؤكد" data-en="Confirmed">مؤكد</div>
+                        <div class="section-badge badge-green" data-ar="مؤكد" data-en="Confirmed">مؤكد</div>
                     </div>
                     <div class="card-body">
                         <div class="grid grid-cols-3 gap-3 mb-4">
                             <div class="text-center">
-                                <p class="text-xs text-[var(--text-muted)] mb-1" data-ar="توقع الإشغال" data-en="Forecast">توقع الإشغال</p>
+                                <p class="text-xs font-semibold mb-1" style="color: var(--text-muted);" data-ar="توقع الإشغال" data-en="Forecast">توقع الإشغال</p>
                                 <div class="metric-value green text-2xl">84%</div>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs text-[var(--text-muted)] mb-1" data-ar="30 يوم" data-en="30 Days">30 يوم</p>
-                                <div class="metric-value blue text-2xl">77%</div>
+                                <p class="text-xs font-semibold mb-1" style="color: var(--text-muted);" data-ar="30 يوم" data-en="30 Days">30 يوم</p>
+                                <div class="metric-value text-2xl" style="color: var(--dark-blue);">77%</div>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs text-[var(--text-muted)] mb-1" data-ar="90 يوم" data-en="90 Days">90 يوم</p>
-                                <div class="metric-value text-2xl">69%</div>
+                                <p class="text-xs font-semibold mb-1" style="color: var(--text-muted);" data-ar="90 يوم" data-en="90 Days">90 يوم</p>
+                                <div class="metric-value text-2xl" style="color: var(--dark-blue);">69%</div>
                             </div>
                         </div>
                         <div class="progress-ring">
-                            <div class="progress-fill bg-gradient-to-r from-[var(--green-success)] to-[var(--blue-primary)]" style="width: 84%"></div>
+                            <div class="progress-fill" style="width: 84%; background: linear-gradient(90deg, var(--green), var(--dark-blue));"></div>
                         </div>
                     </div>
                 </div>
@@ -703,11 +816,11 @@
                 <!-- Pickup Trend -->
                 <div class="card">
                     <div class="card-body">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="text-sm font-semibold text-[var(--blue-dark)]" data-ar="اتجاه الحجز (Pickup)" data-en="Pickup Trend">اتجاه الحجز (Pickup)</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <p class="text-sm font-bold" style="color: var(--dark-blue);" data-ar="اتجاه الحجز (Pickup)" data-en="Pickup Trend">اتجاه الحجز (Pickup)</p>
                             <div class="text-left">
-                                <span class="text-xs text-[var(--text-muted)]">ADR</span>
-                                <span class="text-lg font-bold text-[var(--orange-accent)]">630 SAR</span>
+                                <span class="text-xs font-semibold" style="color: var(--text-muted);">ADR</span>
+                                <span class="text-lg font-bold" style="color: var(--orange);">630 SAR</span>
                             </div>
                         </div>
                         <div class="chart-container">
@@ -719,57 +832,57 @@
                 <!-- Visitor Growth -->
                 <div class="card">
                     <div class="card-body">
-                        <p class="text-sm font-semibold text-[var(--blue-dark)] mb-4" data-ar="نمو الزوار" data-en="Visitor Growth">نمو الزوار</p>
+                        <p class="text-sm font-bold mb-4" style="color: var(--dark-blue);" data-ar="نمو الزوار" data-en="Visitor Growth">نمو الزوار</p>
                         
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="w-14 h-14 rounded-xl bg-[var(--green-light)] flex items-center justify-center">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green-success)" stroke-width="2.5">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background: rgba(39, 174, 96, 0.1);">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5">
                                     <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/>
                                     <polyline points="17,6 23,6 23,12"/>
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-3xl font-bold text-[var(--green-success)]">+18%</div>
-                                <p class="text-xs text-[var(--text-muted)]" data-ar="مقارنة بالشهر الماضي" data-en="vs last month">مقارنة بالشهر الماضي</p>
+                                <div class="text-3xl font-bold positive-value">+18%</div>
+                                <p class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="مقارنة بالشهر الماضي" data-en="vs last month">مقارنة بالشهر الماضي</p>
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-2 gap-3">
                             <div class="metric-card">
-                                <p class="text-xs text-[var(--text-muted)]" data-ar="السوق ساخن" data-en="Market Hot">السوق ساخن</p>
-                                <p class="text-lg font-bold text-[var(--orange-accent)]">+111%</p>
-                                <p class="text-[10px] text-[var(--text-muted)]" data-ar="نمو الطلب" data-en="Demand Growth">نمو الطلب</p>
+                                <p class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="السوق ساخن" data-en="Market Hot">السوق ساخن</p>
+                                <p class="text-lg font-bold" style="color: var(--orange);">+111%</p>
+                                <p class="text-[10px] font-semibold" style="color: var(--text-muted);" data-ar="نمو الطلب" data-en="Demand Growth">نمو الطلب</p>
                             </div>
                             <div class="metric-card">
-                                <p class="text-xs text-[var(--text-muted)]" data-ar="متوسط الإقامة" data-en="Avg. Stay">متوسط الإقامة</p>
-                                <p class="text-lg font-bold text-[var(--blue-dark)]">3.4</p>
-                                <p class="text-[10px] text-[var(--text-muted)]" data-ar="ليالي" data-en="Nights">ليالي</p>
+                                <p class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="متوسط الإقامة" data-en="Avg. Stay">متوسط الإقامة</p>
+                                <p class="text-lg font-bold" style="color: var(--dark-blue);">3.4</p>
+                                <p class="text-[10px] font-semibold" style="color: var(--text-muted);" data-ar="ليالي" data-en="Nights">ليالي</p>
                             </div>
                         </div>
                         
-                        <div class="border-t border-[var(--border-color)] mt-4 pt-4">
+                        <div class="border-t mt-4 pt-4" style="border-color: var(--border);">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="text-xs text-[var(--text-muted)]" data-ar="الإجراء المقترح" data-en="Suggested Action">الإجراء المقترح</span>
-                                <span class="trend-badge trend-up" data-ar="زيادة السعر 6%" data-en="Increase Rate 6%">زيادة السعر 6%</span>
+                                <span class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="الإجراء المقترح" data-en="Suggested Action">الإجراء المقترح</span>
+                                <span class="strategy-badge" data-ar="زيادة السعر 6%" data-en="Increase Rate 6%">زيادة السعر 6%</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="الثقة" data-en="Confidence">الثقة</span>
+                                <span class="text-sm font-bold positive-value">82%</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-xs text-[var(--text-muted)]" data-ar="الثقة" data-en="Confidence">الثقة</span>
-                                <span class="text-sm font-semibold text-[var(--green-success)]">82%</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs text-[var(--text-muted)]" data-ar="متوسط الإنفاق" data-en="Avg. Spend">متوسط الإنفاق</span>
-                                <span class="text-sm font-semibold">920 SAR</span>
+                                <span class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="متوسط الإنفاق" data-en="Avg. Spend">متوسط الإنفاق</span>
+                                <span class="text-sm font-bold" style="color: var(--dark-blue);">920 SAR</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- High Season Controls -->
-                <div class="card" style="background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%); border-color: var(--orange-accent);">
+                <div class="card high-season-card">
                     <div class="card-body">
                         <div class="flex items-center gap-3 mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-[var(--orange-accent)] flex items-center justify-center">
-                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: var(--orange);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                                     <circle cx="12" cy="12" r="5"/>
                                     <line x1="12" y1="1" x2="12" y2="3"/>
                                     <line x1="12" y1="21" x2="12" y2="23"/>
@@ -782,26 +895,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-[var(--blue-dark)]" data-ar="موسم الذروة" data-en="High Season">موسم الذروة</h3>
-                                <p class="text-xs text-[var(--text-muted)]" data-ar="عناصر تحكم مُحسّنة" data-en="Optimized Controls">عناصر تحكم مُحسّنة</p>
+                                <h3 class="font-bold" style="color: var(--dark-blue);" data-ar="موسم الذروة" data-en="High Season">موسم الذروة</h3>
+                                <p class="text-xs font-semibold" style="color: var(--text-muted);" data-ar="عناصر تحكم مُحسّنة" data-en="Optimized Controls">عناصر تحكم مُحسّنة</p>
                             </div>
                         </div>
                         
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             <button class="action-btn btn-orange" id="raiseRatesBtn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="18,15 12,9 6,15"/>
                                 </svg>
                                 <span data-ar="رفع الأسعار +5%" data-en="Raise Rates +5%">رفع الأسعار +5%</span>
                             </button>
-                            <button class="action-btn btn-blue" id="openPromotionBtn">
+                            <button class="action-btn btn-primary" id="openPromotionBtn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/>
                                 </svg>
                                 <span data-ar="فتح عرض ترويجي" data-en="Open Promotion">فتح عرض ترويجي</span>
                             </button>
-                            <button class="action-btn btn-dark" id="closeLowBtn">
+                            <button class="action-btn btn-outline" id="closeLowBtn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                                     <line x1="9" y1="9" x2="15" y2="15"/>
@@ -809,7 +921,7 @@
                                 </svg>
                                 <span data-ar="إغلاق القنوات المنخفضة" data-en="Close Low Channels">إغلاق القنوات المنخفضة</span>
                             </button>
-                            <button class="action-btn" style="background: #64748b; color: white;" id="adjustMinStayBtn">
+                            <button class="action-btn btn-green" id="adjustMinStayBtn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                                     <line x1="16" y1="2" x2="16" y2="6"/>
@@ -826,16 +938,16 @@
     </main>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-white rounded-xl shadow-xl border border-[var(--border-color)] transform translate-y-full opacity-0 transition-all duration-300 z-50">
+    <div id="toast" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 rounded-xl shadow-2xl border transform translate-y-full opacity-0 transition-all duration-300 z-50" style="background: var(--card-bg); border-color: var(--green);">
         <div class="p-4 flex items-center gap-3">
-            <div class="w-12 h-12 rounded-xl bg-[var(--green-light)] flex items-center justify-center flex-shrink-0">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green-success)" stroke-width="2">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(39, 174, 96, 0.1);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2">
                     <polyline points="20,6 9,17 4,12"/>
                 </svg>
             </div>
             <div>
-                <p class="font-semibold text-[var(--blue-dark)]" id="toastTitle"></p>
-                <p class="text-sm text-[var(--text-muted)]" id="toastMessage"></p>
+                <p class="font-bold" style="color: var(--dark-blue);" id="toastTitle"></p>
+                <p class="text-sm" style="color: var(--text-muted);" id="toastMessage"></p>
             </div>
         </div>
     </div>
@@ -877,7 +989,7 @@
             initActions();
         });
 
-        // Heatmap
+        // Heatmap - Using exact colors from identity
         function initHeatmap() {
             const container = document.getElementById('heatmapGrid');
             if (!container) return;
@@ -886,20 +998,24 @@
                 const cell = document.createElement('div');
                 cell.className = 'heatmap-cell';
                 
-                let cls;
-                if (value < 15) cls = 'heatmap-low';
-                else if (value < 25) cls = 'heatmap-medium';
-                else if (value < 40) cls = 'heatmap-high';
-                else cls = 'heatmap-very-high';
+                // Using exact color classes from identity
+                if (value >= 40) {
+                    cell.classList.add('heat-very-high');
+                } else if (value >= 25) {
+                    cell.classList.add('heat-high');
+                } else if (value >= 15) {
+                    cell.classList.add('heat-medium');
+                } else {
+                    cell.classList.add('heat-neutral');
+                }
                 
-                cell.classList.add(cls);
                 cell.textContent = value;
                 cell.title = `${value}%`;
                 container.appendChild(cell);
             });
         }
 
-        // Trend Chart
+        // Trend Chart - Using brand colors
         function initTrendChart() {
             const canvas = document.getElementById('trendChart');
             if (!canvas) return;
@@ -935,7 +1051,7 @@
                 ctx.stroke();
             }
 
-            // Market line (blue)
+            // Market line (dark-blue)
             ctx.beginPath();
             trendData.forEach((d, i) => {
                 const x = padding.left + i * stepX;
@@ -943,8 +1059,8 @@
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             });
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = '#0A2E5A';
+            ctx.lineWidth = 3;
             ctx.stroke();
 
             // Hotel line (green)
@@ -955,8 +1071,8 @@
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             });
-            ctx.strokeStyle = '#10b981';
-            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = '#27AE60';
+            ctx.lineWidth = 3;
             ctx.stroke();
 
             // Points
@@ -967,20 +1083,20 @@
                 const yMarket = padding.top + chartHeight - (d.market / maxVal) * chartHeight;
                 ctx.beginPath();
                 ctx.arc(x, yMarket, 4, 0, Math.PI * 2);
-                ctx.fillStyle = '#2563eb';
+                ctx.fillStyle = '#0A2E5A';
                 ctx.fill();
 
                 // Hotel point
                 const yHotel = padding.top + chartHeight - (d.hotel / maxVal) * chartHeight;
                 ctx.beginPath();
                 ctx.arc(x, yHotel, 4, 0, Math.PI * 2);
-                ctx.fillStyle = '#10b981';
+                ctx.fillStyle = '#27AE60';
                 ctx.fill();
             });
 
             // Labels
-            ctx.fillStyle = '#8a9aad';
-            ctx.font = '10px Plus Jakarta Sans';
+            ctx.fillStyle = '#6c757d';
+            ctx.font = '11px Plus Jakarta Sans';
             ctx.textAlign = 'center';
             trendData.forEach((d, i) => {
                 if (i % 2 === 0) {
@@ -1026,8 +1142,8 @@
             ctx.closePath();
 
             const gradient = ctx.createLinearGradient(0, 0, 0, height);
-            gradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
-            gradient.addColorStop(1, 'rgba(16, 185, 129, 0.02)');
+            gradient.addColorStop(0, 'rgba(39, 174, 96, 0.3)');
+            gradient.addColorStop(1, 'rgba(39, 174, 96, 0.02)');
             ctx.fillStyle = gradient;
             ctx.fill();
 
@@ -1039,7 +1155,7 @@
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             });
-            ctx.strokeStyle = '#10b981';
+            ctx.strokeStyle = '#27AE60';
             ctx.lineWidth = 3;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
@@ -1050,7 +1166,7 @@
             const lastY = height - padding - ((pickupData[pickupData.length - 1] - minVal) / range) * (height - padding * 2);
             ctx.beginPath();
             ctx.arc(lastX, lastY, 6, 0, Math.PI * 2);
-            ctx.fillStyle = '#10b981';
+            ctx.fillStyle = '#27AE60';
             ctx.fill();
             ctx.beginPath();
             ctx.arc(lastX, lastY, 3, 0, Math.PI * 2);
